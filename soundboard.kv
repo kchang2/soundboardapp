@@ -1,0 +1,116 @@
+#:kivy 1.10.0
+
+<Panel>:
+	do_default_tab: False
+
+	TabbedPanelItem:
+		text: 'Main Menu'
+
+		GridLayout:
+			rows: 2
+			Label:
+				text: '\n[b][size=24]LOS ANGELES DODGERS R&D SOUNDBOARD[/size][/b] \n Developed by Kai Chang \n V1.0 \n[i][size=14]\nLive. Breathe. Blue.[/size][/i]'
+				markup: True
+				valign: 'center'
+				halign: 'center'
+				color: (0.1176, 0.5647, 1, 0.69)
+				size_hint_y: None
+
+			Image: 
+				source: './images/lad.jpg'
+
+	TabbedPanelItem:
+		text: 'R&D'
+		on_press: root.fill_IDs_rnd()
+
+		GridLayout:
+			rows: 4
+			cols: 5
+
+			Button:
+				id: b0
+				on_press: root.play_song(b0)
+
+			Button:
+				id: b1
+				on_press: root.play_song(b1)
+
+			Button:
+				id: b2
+				on_press: root.play_song(b2)
+
+			Button:
+				id: b3
+				on_press: root.play_song(b3)
+
+			Button:
+				id: b4
+				on_press: root.play_song(b4)
+
+			Button:
+				id: b5
+				on_press: root.play_song(b5)
+
+			Button:
+				id: b6
+				on_press: root.play_song(b6)
+
+			Button:
+				id: b7
+				on_press: root.play_song(b7)
+
+			Button:
+				id: b8
+				on_press: root.play_song(b8)
+
+			Button:
+				id: b9
+				on_press: root.play_song(b9)
+
+			Button:
+				id: b10
+				on_press: root.play_song(b10)
+
+			Button:
+				id: b11
+				on_press: root.play_song(b11)
+			
+			Button:
+				id: b12
+				on_press: root.play_song(b12)
+
+			Button:
+				id: b13
+				on_press: root.play_song(b13)
+			
+			Button:
+				id: b14
+				on_press: root.play_song(b14)
+
+			Button:
+				id: b15
+				on_press: root.play_song(b15)
+
+			Button:
+				id: b16
+				on_press: root.play_song(b16)
+
+			Button:
+				id: b17
+				on_press: root.play_song(b17)
+
+			Button:
+				id: b18
+				on_press: root.play_song(b18)
+
+			Button:
+				id: b19
+				on_press: root.play_song(b19)
+
+
+	TabbedPanelItem:
+		text: 'Baseball Ops'
+
+		AsyncImage: 
+			source: './images/bbops.gif'
+			anim_delay: 0.05

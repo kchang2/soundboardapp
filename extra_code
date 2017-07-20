@@ -1,0 +1,95 @@
+
+		FloatLayout:
+			Label:
+				text: '[i]Live. Breathe. Blue.[/i]'
+				markup: True
+				size_hint: (0.2, 0.1)
+				color: (0.1176, 0.5647, 1, 0.69)
+
+
+						Image:
+					source: b1.state
+					y: self.parent.y
+					x: self.parent.x
+					size_hint: (0.2, 0.2)
+					allow_stretch: True
+
+
+	TabbedPanelItem:
+		text: 'Developers'
+			
+		GridLayout:
+			rows: 2
+			cols: 2
+
+			Button:
+				id: db1
+				text: b1.state
+				on_press: root.play_song()
+
+			Button:
+				id: db2
+				text: b2.state
+				on_press: root.play_song()
+
+			Button:
+				id: db3
+				text: b3.state
+				on_press: root.play_song()
+
+			Button:
+				id: db4
+				text: b4.state
+				on_press: root.play_song()
+
+
+
+			Button:
+				id: bb0
+				text: bb0.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb1
+				text: bb1.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb2
+				text: bb2.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb3
+				text: bb3.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb4
+				text: bb4.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb5
+				text: bb5.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb6
+				text: bb6.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb7
+				text: bb7.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb8
+				text: bb8.state
+				on_press: root.play_song()
+
+			Button:
+				id: bb9
+				text: bb9.state
+				on_press: root.play_song()
