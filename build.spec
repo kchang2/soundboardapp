@@ -53,7 +53,6 @@ exe1 = EXE(pyz,
           a.scripts,
           name='soundboardapp',
           exclude_binaries=True,
-          icon=join('images', 'mywinapp.ico'),
           debug=False,
           strip=False,
           upx=True,
@@ -67,4 +66,4 @@ coll = COLLECT(exe1,
                *tocs,
                strip=False,
                upx=True,
-               name='mywinapp')
+               name='soundboardapp')

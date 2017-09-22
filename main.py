@@ -1,4 +1,6 @@
 import pandas as pd
+import os
+os.environ['KIVY_AUDIO'] = 'sdl2'
 
 from kivy.app import App
 from kivy.uix.label import Label
@@ -47,6 +49,7 @@ class Panel(TabbedPanel):
 
 class SoundBoardApp(App): 
     def build(self):
+        self.icon = './images/scully.ico'
         return Panel()
 
 
