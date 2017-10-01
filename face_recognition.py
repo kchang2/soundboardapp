@@ -1,5 +1,7 @@
-import cv2
 import os
+import time
+
+import cv2
 import numpy as np
 
 """
@@ -7,75 +9,153 @@ This is the structure of the repository.
 
 data
 |------- train
-|           |----- kaichang1.jpg
-|           |----- kaichang2.jpg
+|           |----- kaichang
+|           |          |-------- 1.png
+|           |          |-------- 2.png
+|           |          |-------- ...
+|           |          |-------- N.png
+|           |----- ryancasey
+|           |          |-------- 1.png
+|           |          |-------- 2.png
+|           |          |-------- ...
+|           |          |-------- N.png
 |           |----- ...
-|           |----- kaichangN.jpg
-|------- test
-|           |----- test1.jpg
-|           |----- test2.jpg
-|           |----- test3.jpg
 
+
+Things to do:
+1. Get Video and take every 10 frames
+2. Run Function to train model / save model
+3. Test to see if can correctly identify
+4. Gui
+
+* Takes every 10 frames and analyzes, if detects face,
+    then takes next 10 frames to confirm face.
+
+** NOT SURE IF NEED TO SAVE MODEL DUE TO SPACE EFFICIENCY
+    consider just re-running each time.
+
+*** Got to move int2name, name2int separate from actual training
+    if you want to save model, otherwise won't have it if you
+    just load the model.
 """
-class Interface(object):
+
+class FacialRecognitionMachine(object):
     def __init__(self):
+
         self.train_PATH = './data/train/'
         self.model_PATH = './model/LBPH_model.xml'
         self.cascadePath = "./model/haarcascade_frontalface_default.xml"
 
-        self.FRM = FacialRecognitionMachine(self.cascade_PATH, model_PATH=self.model_PATH, train_PATH=self.train_PATH)
-
-
-
-class FacialRecognitionMachine(object):
-    def __init__(self, cascade_PATH, model_PATH, train_PATH=None):
-
         # For face detection we will use the Haar Cascade provided by OpenCV.
-        self.faceCascade = cv2.CascadeClassifier(cascadePath)
+        self.faceCascade = cv2.CascadeClassifier(self.cascadePath)
 
-        if model_PATH is None:
-            # LBPH Face Recognizer 
-            self.LBPH_recognizer = cv2.createLBPHFaceRecognizer()
-        else:
-            self.LBPH_recognizer = self.loadModel(model_PATH)
+        # For face detection, we will use the Local Binary Patterns Histograms (LBPH) model.
+        self.model = cv2.createLBPHFaceRecognizer()
+        # Other models: cv2.face.createEigenFaceRecognizer(), cv2.face.createFisherFaceRecognizer()
 
-        self.train_PATH = train_PATH        
+        try:
+            self.model.load(self.model_PATH)
+        except:
+            pass
 
-    def get_images_and_labels(self, path):
+        # capture video source
+        self.capture = cv2.VideoCapture(0)
+
+    def predictLive(self):
         """
-        Appends all absolute image paths.
+        Detects face from webcam, and spits out name
+        """
+        while True:
+            ret, frame = self.capture.read()
+            faces, gray = self.detectFace(frame)
+
+            # can only play 1 music at a time, so checks
+            if len(faces) == 1:
+                (x, y, w, h) = faces[0]
+                face = gray[y:y + w, x:x + h]
+
+                # Distance = 0 means an exact match. Large values mean that there is almost no match between both.
+                label, conf = self.model.predict(face)
+                name = self.int2name[label]
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                cv2.putText(frame, name + ', ' + str(conf), (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+
+            # Display the resulting frame
+            cv2.imshow('Video', frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    def trainModel(self):
+        """
+        Trains the model.
+        """
+        # get all the names in training set (name associated to folder
+        # in 1 to 1 correspondence)
+        dirs = os.listdir(self.train_PATH)
+
+        faces = [] # can be list of numpy arrays
+        labels = [] # must be numpy array of type int
+
+        # mapping name to int, int to name
+        self.name2int = {k: dirs.index(k) for k in dirs}
+        self.int2name = {v: k for k, v in self.name2int.iteritems()}
+
+        for d in dirs:
+            path = self.train_PATH + d + '/'
+            files = [(os.path.join(path, f), d) for f in os.listdir(path) if f.endswith('.png')]
+        
+            for path, label in files:
+                image = cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2GRAY)
+                faceId = self.name2int[label]
+
+                faces.append(image)
+                labels.append(faceId)
+
+        
+        self.model.train(faces, np.array(labels))
+
+
+    def addFace(self, name):
+        """
+        Add new face images to dataset. This
+        could be someone already in the database.
 
         Parameters
-        -----------
-        path : location to training or test dataset
+        ------------------
+        name : name of person.
+        """        
+        face_PATH = self.train_PATH + name + '/'
+        face_list = []
 
-        Note: filenames are of form: FIRST.LAST-#
-        """
-        image_paths = [(os.path.join(path, f), f) for f in os.listdir(path) if f.endswith('.jpg')]
+        try:
+            count = len([f for f in os.listdir(face_PATH) if name not in f])
 
-        # face images
-        faces = []
-        # label that is assigned to the image
-        labels = []
+        except WindowsError:
+            os.mkdir(face_PATH)
+            count = 0
 
-        for image_path, image_name in image_paths:
-            # Read the image
-            image = cv2.imread(image_path)
+        time.sleep(0.25)
+        t0 = time.time()
 
-            # acquire label
-            label = image_name.split('-')
+        while time.time() - t0 < 2:
+            ret, frame = self.capture.read()
+            faces, gray = self.detectFace(frame)
+            
+            if len(faces) == 1:
+                (x, y, w, h) = faces[0]
+                img_PATH = face_PATH + str(count) + '.png'
+                face_list.append( (img_PATH,  gray[y:y + w, x:x + h]) )
+                count += 1
 
-            # detect face
-            face, rect = detect_face(image)
+        # Here you ask if images are okay, and want to save?
 
-            # ignore if no face detected
-            if face is not None:
-                faces.append(face)
-                labels.append(label)
+        # Assume yes
+        for path, img in face_list:
+            cv2.imwrite(path, img)
+            
 
-        return faces, labels
-
-    def detect_face(self, image):
+    def detectFace(self, image):
         """
         Determine and learn where the face is
         and the features that correspond to its label.
@@ -84,78 +164,35 @@ class FacialRecognitionMachine(object):
 
         Parameters
         ------------
-        image       : image containing face
+        image       : image containing face (not grayscaled)
+
+        Returns
+        ------------
+        faces : tuple() if no face detected, [[x, y, w, h], ...] for all faces detected
+        gray  : grayscale image of original
         """
         # convert to greyscale
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        # detect list of faces (for recursive playing)
-        faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5)
-
-        # if no faces are detected, return None
-        if (len(faces) == 0):
-            return None, None
-
-        # assume only a single face (take first one)
-        (x, y, w, h) = faces[0]
-
-        # return only face part of image
-        return gray_image[y:y + w, x:x + h], faces[0]
-
-
-    def train_dataset(self):
-        """
-        Gather all the training data, and train the model.
-        """
-        face, labels = get_images_and_labels(self.train_PATH)
-
-        self.LBPH_recognizer.train(faces, np.array(labels))
-
-
-    def predict(self, image):
-        """
-        Predict based on image what person is.
-        """
-        img = image.copy()
-        face, rect = detect_face(img)
-
-        label, conf = self.LBPH_recognizer.predict(face)
-        label_text = subjects[label]
-
-        # self.draw_rectangle(img, rect)
-        # self.draw_text(img, lable_text, rect[0], rect[1]-5)
-
-        return label_text
-
-
-    def loadModel(self model_PATH):
-        """
-        Load an old Face Recognition model.
-        """
-        return cv2.loadLBPHFaceRecognizer(model_PATH)
+        # returns tuple () if no face detected
+        # returns numpy array [[x, y, w, h], ...] for all faces detected
+        faces = self.faceCascade.detectMultiScale(
+            gray,
+            scaleFactor=1.2,
+            minNeighbors=5,
+            minSize=(30, 30),
+            flags=cv2.cv.CV_HAAR_SCALE_IMAGE
+        )
+        
+        return faces, gray
 
     def saveModel(self):
-        """
-        Saves the new Face Recognition model.
-        """
-        self.FRM.LBPH_recognizer.save(self.model_PATH)
+        self.model.save(self.model_PATH)
 
+    def loadModel(self):
+        self.model.load(self.model_PATH)
 
-    """_____________ Display Functions _____________"""
-    def draw_rectangle(self, image, rect):
-        """
-        Draw rectangle around face in image.
-        
-        Parameters
-        ------------
-        image : image with face
-        rect  : coordinate boundary containing face
-        """
-        (x, y, w, h) = rect
-        cv2.rectangle(image, (x,y), (x + w, y + h), (0, 255, 0), 2)
-
-    def draw_text(self, image, text, x, y):
-        """
-        Places the Label (name) on the image.
-        """
-        cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+test = FacialRecognitionMachine()
+test.addFace('kaichang')
+test.trainModel()
+test.predictLive()
