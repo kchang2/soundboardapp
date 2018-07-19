@@ -2,6 +2,7 @@
 
 <Panel>:
 	do_default_tab: False
+	tab_width: 150
 
 	TabbedPanelItem:
 		text: 'Main Menu'
@@ -114,3 +115,47 @@
 		AsyncImage: 
 			source: './images/bbops.gif'
 			anim_delay: 0.05
+
+
+	TabbedPanelItem:
+		text: 'Face Detector (beta)'
+		on_press: root.initial_setup()
+
+		BoxLayout:
+			orientation: 'vertical'
+
+			Label:
+				id: faceLabel
+				text: '[b][size=24][color=#167ee2]Identification:[/color] None[/size][/b]'
+				markup: True
+				halign: 'center'
+				size_hint_y: None
+
+			AsyncImage:
+				id: camimage
+				size: 640, 480
+				source: root.camera
+
+			BoxLayout:
+				orientation: 'horizontal'
+
+				Button:
+					id: identifyButton
+					text: '[size=24]INCORRECT GUESS?[/size]'
+					markup: True
+					on_press: root.play_song(b0)
+					size_hint_y: None
+
+				Button:
+					id: playButton
+					text: '[size=24]PLAY SONG[/size]'
+					markup: True
+					on_press: root.play_song(b0)
+					size_hint_y: None
+
+				Button:
+					id: addButton
+					text: '[size=24]ADD FACE[/size]'
+					markup: True
+					on_press: root.play_song(b0)
+					size_hint_y: None

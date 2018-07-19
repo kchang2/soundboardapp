@@ -193,6 +193,6 @@ class FacialRecognitionMachine(object):
         self.model.load(self.model_PATH)
 
 test = FacialRecognitionMachine()
-test.addFace('kaichang')
+# test.addFace('ryancasey')
 test.trainModel()
 test.predictLive()
