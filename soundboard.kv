@@ -1,4 +1,5 @@
 #:kivy 1.10.0
+<KivyCamera>:
 
 <Panel>:
 	do_default_tab: False
@@ -131,10 +132,9 @@
 				halign: 'center'
 				size_hint_y: None
 
-			AsyncImage:
-				id: camimage
-				size: 640, 480
-				source: root.camera
+			KivyCamera:
+				id: facecam
+				size_hint_y: 2.2
 
 			BoxLayout:
 				orientation: 'horizontal'

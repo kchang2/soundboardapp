@@ -16,9 +16,10 @@ from kivy.graphics.texture import Texture
 
 import cv2
 
+# Bill Bridge is genius
+# https://stackoverflow.com/questions/40862009/kivy-camera-as-kv-language-widget
 
 # import test as FR
-
 
 # https://kivy.org/docs/api-kivy.uix.tabbedpanel.html
 # https://groups.google.com/forum/#!topic/kivy-users/hM-goYwEvwc
@@ -32,27 +33,26 @@ import cv2
 # from kivy.config import Config
 
 
-
-
 class KivyCamera(Image):
-    def __init__(self, parent, capture, fps, **kwargs):
-        self.parent = parent
-        self.buf = 'http://lmsotfy.com/so.png'
+    def __init__(self, **kwargs): #, parent, capture, fps, **kwargs):
         super(KivyCamera, self).__init__(**kwargs)
-        
-        self.capture = capture
-        self.running = False
-        self.rate = 1.0 / fps
 
-    def onStart(self):
+        self.running = False
+        # self.capture = capture
+        # self.rate = 1.0 / fps
+
+    def onStart(self, capture, fps=20):
         if not self.running:
             self.running = True
+            self.capture = capture
+            self.rate = 1.0 / fps
             self.event = Clock.schedule_interval(self.update, self.rate)
 
     def onStop(self):
          if self.running:
             self.running = False
             self.event.cancel()
+            self.capture = None
 
     def update(self, dt):
         ret, frame = self.capture.read()
@@ -65,21 +65,19 @@ class KivyCamera(Image):
             image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             # display image from the texture
             self.texture = image_texture
-            # self.parent.ids.camimage = self
-            self.load_memory(buf)
-            self.parent.ids.camimage.reload()
+            self.canvas.ask_update()
+
 
 class Panel(TabbedPanel):
     def __init__(self, **kwargs):
-        self.camera = 'http://lmsotfy.com/so.png'
-
         super(Panel, self).__init__(**kwargs)
+
         self.blist = []
         self.df = pd.read_table('songs.dat', delimiter=', ')
         self.sound = None
 
-        self.capture = None
         # self.machine = FR.FacialRecognitionMachine()
+        self.capture = None
         self.fps = 20
 
     def fill_IDs_rnd(self):  
@@ -92,12 +90,7 @@ class Panel(TabbedPanel):
 
     def initial_setup(self):
         self.capture = cv2.VideoCapture(0)
-        self.camera = KivyCamera(parent=self, capture=self.capture, fps=self.fps)
-        self.camera.onStart()
-        self.ids.camimage.source = self.camera.buf
-        # self.ids.camimage.source = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png'
-        # self.ids.camimage.reload()
-        # print self.ids['camimage']
+        self.ids.facecam.onStart(capture=self.capture, fps=self.fps)
 
     def play_song(self, id):
         name = id.text
