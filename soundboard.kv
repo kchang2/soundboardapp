@@ -1,6 +1,38 @@
 #:kivy 1.10.0
 <KivyCamera>:
 
+<InstructionsNewFacePopup>:
+	title: 'Adding New Face Instructions'
+	size_hint: (None, None)
+	size: (600, 500)
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		Label: 
+			text: root.instruction_text
+			size_hint: (1, 0.9)
+
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint: (1, 0.1)
+
+			Button:
+				text: ''
+				opacity: 0
+
+			Button:
+				text: ''
+				opacity: 0
+	
+			Button:
+				text: 'Cancel'
+				on_release: root.on_answer(False)
+
+			Button:
+				text: 'Accept'
+				on_release: root.on_answer(True)
+
 <Panel>:
 	do_default_tab: False
 	tab_width: 150
@@ -120,7 +152,7 @@
 
 	TabbedPanelItem:
 		text: 'Face Detector (beta)'
-		on_press: root.initial_setup()
+		on_press: root.initial_camera_setup()
 
 		BoxLayout:
 			orientation: 'vertical'
@@ -140,22 +172,23 @@
 				orientation: 'horizontal'
 
 				Button:
-					id: identifyButton
-					text: '[size=24]INCORRECT GUESS?[/size]'
+					id: cancelButton
+					text: ''
 					markup: True
-					on_press: root.play_song(b0)
+					on_press: root.cancel_action()
 					size_hint_y: None
+					disabled: True
 
 				Button:
-					id: playButton
-					text: '[size=24]PLAY SONG[/size]'
+					id: predictButton
+					text: '[size=24]RUN[/size]'
 					markup: True
-					on_press: root.play_song(b0)
+					on_press: root.execute_machine()
 					size_hint_y: None
 
 				Button:
 					id: addButton
 					text: '[size=24]ADD FACE[/size]'
 					markup: True
-					on_press: root.play_song(b0)
+					on_press: root.add_face()
 					size_hint_y: None
