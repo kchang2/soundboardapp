@@ -1,5 +1,6 @@
 import os
 import time
+import errno
 
 import cv2
 import numpy as np
@@ -53,10 +54,18 @@ class FacialRecognitionMachine(object):
         self.model = cv2.createLBPHFaceRecognizer()
         # Other models: cv2.face.createEigenFaceRecognizer(), cv2.face.createFisherFaceRecognizer()
 
+        # load previous model
         try:
             self.model.load(self.model_PATH)
         except:
             pass
+
+        # create training folder if doesn't exist
+        try:
+            os.makedirs(self.train_PATH)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
     def loadModel(self):
         self.model.load(self.model_PATH)
@@ -92,7 +101,7 @@ class FacialRecognitionMachine(object):
         
         return faces, gray
 
-    def addFace(self, name):
+    def addFace(self, name, frame_list):
         """
         Add new face images to dataset. This
         could be someone already in the database.
@@ -111,11 +120,7 @@ class FacialRecognitionMachine(object):
             os.mkdir(face_PATH)
             count = 0
 
-        time.sleep(0.25)
-        t0 = time.time()
-
-        while time.time() - t0 < 2:
-            ret, frame = self.capture.read()
+        for frame in frame_list:
             faces, gray = self.detectFace(frame)
             
             if len(faces) == 1:
@@ -124,37 +129,9 @@ class FacialRecognitionMachine(object):
                 face_list.append( (img_PATH,  gray[y:y + w, x:x + h]) )
                 count += 1
 
-        # Here you ask if images are okay, and want to save?
-
         # Assume yes
         for path, img in face_list:
             cv2.imwrite(path, img)
-    
-
-    def predictLive(self):
-        """
-        Detects face from webcam, and spits out name
-        """
-        while True:
-            ret, frame = self.capture.read()
-            faces, gray = self.detectFace(frame)
-
-            # can only play 1 music at a time, so checks
-            if len(faces) == 1:
-                (x, y, w, h) = faces[0]
-                face = gray[y:y + w, x:x + h]
-
-                # Distance = 0 means an exact match. Large values mean that there is almost no match between both.
-                label, conf = self.model.predict(face)
-                name = self.int2name[label]
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                cv2.putText(frame, name + ', ' + str(conf), (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
-
-            # Display the resulting frame
-            cv2.imshow('Video', frame)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
 
     def trainModel(self):
         """
@@ -187,6 +164,28 @@ class FacialRecognitionMachine(object):
 
     def saveModel(self):
         self.model.save(self.model_PATH)
+
+    def predictFrame(self, frame):
+        """
+        Detects face from webcam, and spits out name
+        """
+        faces, gray = self.detectFace(frame)
+
+        # can only play 1 music at a time, so checks
+        if len(faces) == 1:
+            (x, y, w, h) = faces[0]
+            face = gray[y:y + w, x:x + h]
+
+            # Distance = 0 means an exact match. Large values mean that there is almost no match between both.
+            label, conf = self.model.predict(face)
+            name = self.int2name[label]
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            cv2.putText(frame, name + ', ' + str(conf), (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+
+            return frame, name, conf
+
+        return frame, None, None
+
 
 # test = FacialRecognitionMachine()
 # test.addFace('ryancasey')
