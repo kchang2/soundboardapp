@@ -6,3 +6,4 @@ data/
 audio/
 archive/
 .ipynb_checkpoints/
+model/LBPH_model.xml
