@@ -114,7 +114,14 @@ class FacialRecognitionMachine(object):
         face_list = []
 
         try:
-            count = len([f for f in os.listdir(face_PATH) if name not in f])
+            # old
+            # count = len([f for f in os.listdir(face_PATH) if name not in f])
+
+            # new
+            for f in os.listdir(face_PATH):
+                os.remove(face_PATH + f)
+
+            count = 0
 
         except WindowsError:
             os.mkdir(face_PATH)

@@ -10,14 +10,13 @@ from pydub import AudioSegment
 AudioSegment.converter = r"C:\ffmpeg\bin\ffmpeg.exe"
 df = pd.read_table('songs.dat', delimiter= ', ')
 
-
+# throttled by network connectivity, so easier to update manually. See commented code below.
 for index, row in df.iterrows():
-	desired_path = './audio/%s.mp3' %row['name']
+	# if row['name'] not in ['Yaz']: 
+	# 	continue
+	# print row
 
-	try:
-		remove(desired_path)
-	except WindowsError:
-		pass
+	desired_path = './audio/%s.mp3' %row['name']
 
 	try:
 		v = pafy.new(row['song_url'])
@@ -30,11 +29,28 @@ for index, row in df.iterrows():
 		song = AudioSegment.from_file(path, format='m4a')
 		remove(path)
 
-		# millisecond format for pydub
-		start_time = row['start_time'] * 1000
-		ten_seconds = 10 * 1000 
-		song = song[start_time:start_time + ten_seconds]
-		song.export(desired_path, format='mp3')
+	except WindowsError:
+		continue
 
+	try:
+		remove(desired_path)
 	except WindowsError:
 		pass
+
+	# millisecond format for pydub
+	## try start time
+	try:
+		t_i = row['start_time'].split(':')
+		start_time = (int(t_i[0]) * 60 + int(t_i[1])) * 1000
+	except:
+		start_time = 0
+
+	## end time
+	try:
+		t_f = row['end_time'].split(':')
+		end_time = (int(t_f[0]) * 60 + int(t_f[1])) * 1000
+	except:
+		end_time = start_time + 10 * 1000
+		
+	song = song[start_time:end_time]
+	song.export(desired_path, format='mp3')

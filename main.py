@@ -147,7 +147,6 @@ class KivyCamera(Image):
         if ret:
             # save image
             if self.face_trigger is True and len(self.face_list) < 42:
-                print 'bye'
                 self.face_list.append(copy.deepcopy(frame))
 
             elif self.face_trigger is True:
@@ -238,7 +237,7 @@ class Panel(TabbedPanel):
         self.ids.facecam.onStop()
 
         for i in xrange(self.df['name'].size):
-            self.ids["b%i" %i].text = self.df['name'].iloc[i] 
+            self.ids["b%i" %i].text = self.df['name'].iloc[i]
         self.blist = []
         
     def fill_IDs_bbops(self):
@@ -247,7 +246,7 @@ class Panel(TabbedPanel):
         pass
 
     def initial_camera_setup(self):
-        self.capture = cv2.VideoCapture(0)
+        self.capture = cv2.VideoCapture(1)
         self.ids.facecam.onStart(capture=self.capture, fps=self.fps)
         # insert here to reset all modes
 
@@ -270,7 +269,7 @@ class Panel(TabbedPanel):
 
             # stop face cam & re-run with new mode
             self.ids.facecam.onStop()
-            self.capture = cv2.VideoCapture(0)
+            self.capture = cv2.VideoCapture(1)
             self.ids.facecam.onStart(capture=self.capture, fps=self.fps, mode='face')
 
         # in add face mode
@@ -281,6 +280,9 @@ class Panel(TabbedPanel):
     def cancel_action(self):
         # currently on face recognition machine
         if self.ids.predictButton.disabled is False:
+            # cancel song playing if any
+            self.execute_machine()
+
             # turn off machine + reset button
             self.ids.predictButton.text = '[size=24]RUN[/size]'
 
@@ -354,7 +356,7 @@ class Panel(TabbedPanel):
 
             # stop face cam & re-run with new mode
             self.ids.facecam.onStop()
-            self.capture = cv2.VideoCapture(0)
+            self.capture = cv2.VideoCapture(1)
             self.ids.facecam.onStart(capture=self.capture, fps=self.fps, mode='predict')
 
     def retrain_machine(self, popup):
@@ -386,10 +388,10 @@ class Panel(TabbedPanel):
                 pass
 
     def play_song_auto(self, name):
-        if self.name not in self.df['name']:
+        if name not in self.df['name'].values:
             pass
-
-        elif self.current_id != name or time.time() - self.last_played_time > 15:
+        
+        elif self.current_id != name or time.time() - self.last_played_time > 20:
             if self.sound is not None:
                 try:
                     self.sound.stop()
