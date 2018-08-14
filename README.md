@@ -46,11 +46,27 @@ Simply run the following command in a folder that you desire the application to 
 
 This should create a build and dist folder for you, where the executable is in the dist folder. More information can be found: https://kivy.org/docs/guide/packaging-windows.html
 
-## How to update the Songs:
-Fill in the songs.dat by Name, YouTube URL, and Start time
-Run the extract_music.py file.
-Songs are automatically cut into 10 second clips.
-Any clips longer will need to be individually selected and trimmed.
+#### Algorithm
+I use an LBPH (local binary pattern histogram) algorithm, provided by OpenCV, to determine identifies and respective faces.
+For more information on local binary patterns, check out:
+
+https://towardsdatascience.com/face-recognition-how-lbph-works-90ec258c3d6b
+
+
+## How to update the songs:
+The songs get updated and referenced through <code>songs.data</code>. The data structure is used when generating the soundboard values and faces, but the music doesn't come from this table and respective URLs. Rather, this data structure is used to extract music from youtube through the <code>extract_music.py</code> file.
+
+To update songs (and add or remove people), do the following:
+1. Fill in the songs.dat with your Name, groupid, YouTube URL, Start Time, and End Time
+ + note that the name will be reflective on the soundboard, so I recommend you keep it short (like an office or team nickname)
+ + groupid pertains to which tab the row belongs to. In a future update, there will be capabilities for 2 groups, so this will apply there. For now, you should put down 1 to show up on the first group, and any number for otherwise (hidden).
+ + YouTube URLs do not have to be the shortened version like I have put as example. It just seems easier to look that way.
+ + Start time is not necessary -- default is 0:00.
+ + End time is also not necessary -- default is 10 seconds after start time.
+ + Combinations apply for start and end times (ie. start time of 1:23 with no end time is esssentially [1:23, 1:33].
+2. Run the <code>extract_music.py</code> file.
+
+Now, you should expect to find songs appropriately named with the correct length / section in the <code>audio</code> folder.
 
 #### Icon
 To Vin Scully, the best announcer that ever lived. Live. Breathe. Blue.
