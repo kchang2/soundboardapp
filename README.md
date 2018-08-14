@@ -1,4 +1,4 @@
-# Soundboard app for Desktop usage
+# Soundboard app for Windows
 Made with love from Kivy and Python.
 
 ## Versions
