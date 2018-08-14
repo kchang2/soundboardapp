@@ -1,6 +1,7 @@
 *.mp3
 *.dat
 *.png
+*.pyc
 old_face_Recognizer.py
 data/
 audio/
