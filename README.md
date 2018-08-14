@@ -58,8 +58,8 @@ The songs get updated and referenced through <code>songs.data</code>. The data s
 
 To update songs (and add or remove people), do the following:
 1. Fill in the songs.dat with your Name, groupid, YouTube URL, Start Time, and End Time
-    + note that the name will be reflective on the soundboard, so I recommend you keep it short (like an office or team nickname)
-    + groupid pertains to which tab the row belongs to. In a future update, there will be capabilities for 2 groups, so this will apply there. For now, you should put down 1 to show up on the first group, and any number for otherwise (hidden).
+    + The name will be reflective on the soundboard, so I recommend you keep it short (like an office or team nickname)
+    + The groupid pertains to which tab the row belongs to. In a future update, there will be capabilities for 2 groups, so this will apply there. For now, you should put down 1 to show up on the first group, and any number for otherwise (hidden).
     + YouTube URLs do not have to be the shortened version like I have put as example. It just seems easier to look that way.
     + Start time is not necessary -- default is 0:00.
     + End time is also not necessary -- default is 10 seconds after start time.
