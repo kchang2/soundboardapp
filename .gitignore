@@ -1,2 +1,9 @@
 *.mp3
 *.dat
+*.png
+old_face_Recognizer.py
+data/
+audio/
+archive/
+.ipynb_checkpoints/
+model/LBPH_model.xml

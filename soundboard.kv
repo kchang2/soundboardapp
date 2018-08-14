@@ -1,7 +1,46 @@
 #:kivy 1.10.0
+<KivyCamera>:
+
+<EmployeeListPopup>:
+	title: 'Choose Name'
+	size_hint: (None, None)
+	size: (500, 500)
+
+<InstructionsNewFacePopup>:
+	title: 'Adding New Face Instructions'
+	size_hint: (None, None)
+	size: (600, 500)
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		Label: 
+			text: root.instruction_text
+			size_hint: (1, 0.9)
+
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint: (1, 0.1)
+
+			Button:
+				text: ''
+				opacity: 0
+
+			Button:
+				text: ''
+				opacity: 0
+	
+			Button:
+				text: 'Cancel'
+				on_release: root.on_answer(False)
+
+			Button:
+				text: 'Accept'
+				on_release: root.on_answer(True)
 
 <Panel>:
 	do_default_tab: False
+	tab_width: 150
 
 	TabbedPanelItem:
 		text: 'Main Menu'
@@ -114,3 +153,47 @@
 		AsyncImage: 
 			source: './images/bbops.gif'
 			anim_delay: 0.05
+
+
+	TabbedPanelItem:
+		text: 'Face Detector (beta)'
+		on_press: root.initial_camera_setup()
+
+		BoxLayout:
+			orientation: 'vertical'
+
+			Label:
+				id: faceLabel
+				text: '[b][size=24][color=#167ee2]Identification:[/color] None[/size][/b]'
+				markup: True
+				halign: 'center'
+				size_hint_y: None
+
+			KivyCamera:
+				id: facecam
+				size_hint_y: 2.2
+
+			BoxLayout:
+				orientation: 'horizontal'
+
+				Button:
+					id: cancelButton
+					text: ''
+					markup: True
+					on_press: root.cancel_action()
+					size_hint_y: None
+					disabled: True
+
+				Button:
+					id: predictButton
+					text: '[size=24]RUN[/size]'
+					markup: True
+					on_press: root.execute_machine()
+					size_hint_y: None
+
+				Button:
+					id: addButton
+					text: '[size=24]ADD FACE[/size]'
+					markup: True
+					on_press: root.add_face()
+					size_hint_y: None

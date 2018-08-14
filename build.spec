@@ -11,9 +11,11 @@ block_cipher = None
 kivy_deps_all = hooks.get_deps_all()
 kivy_factory_modules = hooks.get_factory_modules()
 
-datas = [
-    (join('common', '*.ini'), 'common')
-]
+# datas = [
+#    (join('common', '*.ini'), 'common')
+# ]
+
+datas = []
 
 # list of modules to exclude from program
 excludes_a = ['Tkinter', '_tkinter', 'twisted', 'docutils', 'pygments']
