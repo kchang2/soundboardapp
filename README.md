@@ -26,9 +26,9 @@ Training data is contained in the data/training/ folder. The structure comes fro
 #### To Run (Use)
 Click on the desired version under the <code>Tags</code>. A zip file containing all the necessary files should be in there, with the executable.
 
-1. Go into the <dist> folder
-2. Go into the <run> folder
-3. Look for the LADSoundboard Application (LADSoundboard.exe)
+1. Go into the <code>dist</code> folder
+2. Go into the <code>run</code> folder
+3. Look for the LADSoundboard Application (<code>LADSoundboard.exe<code>)
 4. Double click -- ready to go!
 Optional: Pin to taskbar or make shortcut, so you do not have to enter the folder each time.
 Optional: Put into Programs folder, as a real program.
