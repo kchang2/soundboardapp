@@ -28,7 +28,7 @@ Click on the desired version under the <code>Tags</code>. A zip file containing 
 
 1. Go into the <code>dist</code> folder
 2. Go into the <code>run</code> folder
-3. Look for the LADSoundboard Application (<code>LADSoundboard.exe<code>)
+3. Look for the LADSoundboard Application (<code>LADSoundboard.exe</code>)
 4. Double click -- ready to go!
 Optional: Pin to taskbar or make shortcut, so you do not have to enter the folder each time.
 Optional: Put into Programs folder, as a real program.
