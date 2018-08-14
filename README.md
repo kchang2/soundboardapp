@@ -61,8 +61,8 @@ To update songs (and add or remove people), do the following:
     + The name will be reflective on the soundboard, so I recommend you keep it short (like an office or team nickname)
     + The groupid pertains to which tab the row belongs to. In a future update, there will be capabilities for 2 groups, so this will apply there. For now, you should put down 1 to show up on the first group, and any number for otherwise (hidden).
     + YouTube URLs do not have to be the shortened version like I have put as example. It just seems easier to look that way.
-    + Start time is not necessary -- default is 0:00.
-    + End time is also not necessary -- default is 10 seconds after start time.
+    + Start time is not necessary -- default is 0:00. The structure is MM:SS. There is no HH, so pick a YouTube video < 60 min long.
+    + End time is also not necessary -- default is 10 seconds after start time. The structure is MM:SS. 
     + Combinations apply for start and end times (ie. start time of 1:23 with no end time is esssentially [1:23, 1:33].
 2. Run the <code>extract_music.py</code> file.
 
